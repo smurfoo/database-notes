@@ -40,7 +40,7 @@ FirstName varchar(35) not null,
 lastName varchar(35) not null)
 
 Create Table CustomerOrder
-(OrderNumber int not null constraint pk_CustomerOrder primary key,
+(OrderNumber int identity (1,1) not null constraint pk_CustomerOrder primary key,
 OrderDate date not null,
 Total smallMoney not null,
 CustomerID int not null constraint fk_CustomerOrderToCustomer references 
@@ -65,5 +65,6 @@ values
 ('marge', 'simpson'),
 ( 'bart' , 'simpson')
 insert into CustomerOrder (OrderDate, Total, CustomerID)
-values ('Dec 2 2021', 100, 3)
+values ('Dec 2 2021', 100, 110)
 select * from CustomerOrder
+select * from Customer
