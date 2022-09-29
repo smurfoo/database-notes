@@ -1,0 +1,77 @@
+drop table Activity
+drop table Club
+drop table Student
+drop table Grade
+drop table Course
+
+
+
+
+create Table Course
+
+(
+CourseID char(6) not null constraint pk_Course primary key,
+CourseName varchar(40) not null,
+Hours smallint not null 
+constraint dk_validHours default (80), 
+NoOfStudents smallint not null
+
+
+)
+Create Table Grade
+(
+StudentID int not null,
+CourseID char(6) not null constraint fk_GradeToCourse 
+references Course (CourseID),
+Mark smallint not null,
+constraint pk_Grade primary key (StudentId, CourseID)
+
+)
+Create Table Student 
+(
+StudentID int not null constraint pk_Student primary key,
+StudentFirstName varchar(40) not null,
+StudentLastName varchar(40) not null,
+GenderCode char(1) not null,
+Address varchar(30) not null,
+Birthdate datetime not null,
+PostalCode char(6) not null,
+AvgMark decimal (4,1) not null,
+NoOfCourses smallint not null
+
+)
+Create Table Club
+(
+ClubID int not null constraint pk_Club primary key,
+ClubName varchar(50) not null
+
+)
+Create Table Activity 
+(
+ClubID int not null constraint fk_ActivityToClub 
+references Club (ClubID),
+StudentID int not null,
+constraint pk_StudentIDAndClubID primary key (StudentID, ClubID)
+)
+
+Alter Table Club
+Add
+meetingLocation  varchar(50) not null
+
+Alter Table Student
+Add
+constraint ck_validBirthdate check ( getdate() < Birthdate )
+
+Alter Table Course
+Add
+constraint df_validHours default (80)
+
+Alter Table Student
+nocheck constraint ck_validBirthdate
+
+Alter Table Student
+check constraint ck_validBirthdate
+
+Alter Table Course
+drop constraint df_validHours
+
