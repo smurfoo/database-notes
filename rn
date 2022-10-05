@@ -1,0 +1,45 @@
+/*
+  Purpose: In the game “Unicorn Race Game” the player rolls a virtual 6-sided die and the Unicorns (*) move that many spaces
+down the track (=). The player will play against a computer opponent. The top unicorn will be the player and the bottom
+unicorn will be the computer.
+  Input: length of track
+  Output: winner, position
+  Author: Ilyas Guleed
+  Date: October 5 2022
+ */
+namespace unicornassignment2
+{
+    internal class Program
+{
+    static void Main(string[] args)
+    {
+            // declare variables
+            int trackLength,
+                unicornPosition,
+                computerPoisiton,
+                diceRoll,
+                rollSum = 0;
+            char trackPiece = '=';
+            // dice random gen
+            Random random = new Random();
+            diceRoll = random.Next(1, 7);
+            // menu/prompt
+            Console.WriteLine("Welcome to the Unicorn Racing Game!");
+
+            Console.Write("Enter the length of the track: ");
+            trackLength = int.Parse(Console.ReadLine());
+            
+           // let player roll until tracklength = rollsum
+            // if statement for negative track length integer
+          
+            Console.Clear();
+
+            for (int trackInt = 1; trackInt <= trackLength; trackInt++)
+            {
+                Console.Write(trackPiece);
+
+            }
+
+        }
+}
+}
