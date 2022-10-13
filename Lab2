@@ -1,0 +1,89 @@
+Drop Table Passengers
+Drop Table Bookings
+Drop Table Payments
+Drop Table Flights
+Drop Table Airlines
+Drop Table Airport
+
+Create Table Airport (
+AirportCode int not null identity (100,1) constraint PK_Airport Primary key,
+Name varchar(85) not null,
+City varchar(35) not null,
+Country varchar(35) not null,
+IATA char(3)  null,
+ICAO char(3)  null,
+Latitude decimal not null,
+Longitude decimal not null,
+Altitude int not null,
+Timezone tinyint not null,
+TZDatabaseTimeZone varchar(50) not null
+)
+Go
+Create Table Airlines (
+AirlineCode char(3) not null constraint PK_Airlines primary key,
+Name varchar(85) not null
+)
+Go
+Create Table Flights (
+FlightCode varchar(18) not null constraint PK_Flights primary key,
+FlightNumber varchar(8) not null,
+Date date not null,
+DepartureAirport int not null constraint fk_DepartureAirport references Airport (AirportCode)
+constraint ck_validLanding1 check (ArrivalAirport != DepartureAirport),
+Departure time not null,
+ArrivalAirport int not null constraint fk_ArrivalAirport references Airport (AirportCode)
+constraint ck_validLanding check (ArrivalAirport != DepartureAirport),
+Arrival datetime not null,
+FlightDuration time not null,
+Cancelled char(1) null,
+IsFull char(1) not null
+constraint df_validFull default ('N'),
+AirlineCode char(3) not null constraint fk_Airlines references Airlines (AirlineCode)
+)
+GO
+Create Table Payments (
+PaymentConfirmationNumber varchar(40) not null constraint PK_Payments primary key,
+Timestamp datetime not null
+constraint df_validTime default (getdate()),
+Amount money not null
+ constraint ck_validMoney check (amount>0),
+PaymentType varchar(10) not null
+)
+GO
+Create Table Bookings (
+ConfirmationNumber char(11) not null constraint PK_Bookings primary key,
+FlightCode varchar(18) not null constraint FK_Flights references Flights (FlightCode),
+PaymentConfirmationNumber varchar(40) not null constraint FK_PaymentConfirmation references Payments (PaymentConfirmationNumber),
+FirstName varchar(40) not null,
+MiddleName varchar(40) null,
+LastName varchar(40) not null,
+PhoneNumber char(12) not null
+constraint ck_validPhone check (PhoneNumber like '([1-9][0-9][0-9])-[1-9][0-9][0-9]-[0-9][0-9][0-9][0-9]'),
+AlternatePhoneNumber char(12) null
+ constraint ck_validAltPhone check (AlternatePhoneNumber like '([1-9][0-9][0-9])-[1-9][0-9][0-9]-[0-9][0-9][0-9][0-9]'),
+EmailAddress varchar(50) not null,
+StreetAddress varchar(50) not null,
+City varchar(40) not null,
+Region varchar(25)  null,
+Country varchar(35) not null
+)
+Create Table Passengers (
+CustomerID int not null constraint PK_CustomerID primary key,
+ConfirmationNumber char(11) not null constraint FK_Bookings references Bookings (ConfirmationNumber),
+FirstName varchar(40) not null,
+MiddleName varchar(40) null,
+LastName varchar(40) not null,
+DateOfBirth date not null,
+PhoneNumber char(12) null
+constraint ck_validPhone2 check (PhoneNumber like '([1-9][0-9][0-9])-[1-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
+)
+Alter Table Passengers 
+Add
+AgeGroup varchar(8) not null   constraint ck_validAgeGroup check (AgeGroup like 'Child'-'Adult'-'Senior')
+constraint dk_defaultGroup default 'Adult'
+Alter Table Flights
+Add
+constraint dk_validStatus default 'N' for cancelled
+Create nonclustered index IX_forFK
+ON Passengers (ConfirmationNumber)
+ON Bookings (FlightCode)
