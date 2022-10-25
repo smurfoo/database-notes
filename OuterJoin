@@ -1,0 +1,33 @@
+Outer join
+-- Remember, INNER JOINS only return records that have related records in their child tables
+
+-- Select all the position Descriptions and the names of staff in them
+Select positionDescription , firstname, lastname 
+from position 
+inner join staff on position.PositionId = staff.PositionID
+-- We are not returning one position because there are not staff in that position
+-- Use outer joins to get ALL the parent records, even if there are no related 
+-- child records
+-- Left outer joins/ right outer joins
+-- In a 2 table join you can use which ever one you want.
+--Using a left outer join to get ALL the position descriptions, the staff in them
+-- even if they have no staff
+Select positionDescription , firstname, lastname 
+from staff 
+right outer join position on position.PositionId = staff.PositionID
+-- Why does this not make sense?
+-- This behaves like an inner
+Select positionDescription , firstname, lastname 
+from position 
+right outer join staff on position.PositionId = staff.PositionID
+
+-- For a 2 TABLE outer join the left/right will ALWAYS point to the PARENT table
+
+-- GENERAL RULE - Your outer joins must always point to the data that you want to keep
+
+
+-- Select ALL the student names , their course ids, and marks
+Select firstname + ' ' + lastname 'StudentName', courseid 'CourseID' , mark 'Mark'  
+from student
+left outer join Registration on student.StudentID = Registration.StudentID 
+right outer join Offering on offering.OfferingCode = Registration.OfferingCode
