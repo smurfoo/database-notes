@@ -1,0 +1,23 @@
+select staffID, positiondescription
+from staff
+left outer join Position
+on staff.staffid = position.positionID
+select count(staffID), positiondescription
+from position 
+left outer join staff 
+on  position.staffid = staff.staffid
+select AVG(mark)'Average' , firstname + ' ' + lastname 'StudentName' 
+from student
+right outer join registration 
+on student.studentID  = registration.studentID 
+group by firstname, lastname
+select MIN(mark) 'Lowest' , MAX(mark) 'Highest', firstname + ' ' + lastname 'StudentName'
+from registration
+left outer join student
+on registration.studentID = student.studentID
+group by firstname, lastname
+select COUNT(studentID), clubName 'ClubName' 
+from club
+left outer join student
+on club.studentID = student.studentID
+group by clubName
