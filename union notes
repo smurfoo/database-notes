@@ -1,0 +1,36 @@
+-- UNION
+-- Combine the results of more than one query into one result set of data
+
+-- Select all the names in the school
+Select firstname, lastname from Student -- 17
+UNION 
+Select firstname, lastname from staff -- 10
+-- OH NO! We lost 2 people :(
+-- Union uses distinct by default
+Select firstname, lastname from Student -- 17
+UNION ALL
+Select firstname, lastname from staff -- 10
+-- to return duplicates use UNION ALL 
+
+-- Rules
+-- Can combine any number of queries
+Select firstname, lastname from Student 
+UNION 
+Select firstname, lastname from staff 
+
+-- Columns being combined must have similar data types
+Select firstname, Birthdate from Student 
+UNION ALL
+Select firstname, lastname from staff 
+-- Column names are determined from the first query 
+Select firstname'StudentFirstName', lastname from Student -- 17
+UNION ALL
+Select firstname'StaffFirstName', lastname from staff --10
+-- Order by 
+Select firstname,lastname, city from student
+order by lastname asc, firstname asc
+-- If you order by you apply it after the last query
+Select firstname, lastname from Student 
+UNION 
+Select firstname, lastname from staff 
+order by lastname asc
