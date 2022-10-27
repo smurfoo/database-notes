@@ -1,0 +1,46 @@
+-- SubQueries
+--A query inside another statement(query, insert, update, delete)
+--A subquery is a full query that can be executed and tested on it's own 
+--Can usually be used anywhere a value is used
+--join-Select all the staff names that area a instructor
+select firstname , lastname from staff
+inner join position on position.positionId = staff.positionid
+where positiondescription = 'dean'
+select firstname,lastname from staff
+where positionId = (Select PositionID from position where PositionDescription = 'Dean')
+
+--join-- Select studentID and names of students that have made payments
+select distinct student.studentId'ID', firstname + ' ' + lastname 'Student Name' from student
+inner join payment on payment.StudentID = student.StudentID
+--A subquery
+select studentid,firstname,lastname from student
+where studentid in (select studentid from payment)
+--does not work, because the subquery returns more than one value
+--If the subquery returns more than one value, you must use IN
+select studentid,firstname,lastname from student
+where studentid in (select studentid from payment)
+--studentid, names of student that have made no payments
+-- subquery
+select student.studentid,firstname,lastname ,paymentID 
+from student
+left outer join payment on payment.studentID = student.studentID
+where amount is null
+-- sub query
+select studentid,firstname,lastname from student
+where studentid not in (select studentid from payment)
+
+-- How many payments has each and every student made? show student id name and the count
+select  student.studentid,firstname,lastname,count(*) 'Count'  
+from student
+left outer join payment on payment.studentid = student.studentid
+group by student.studentid,firstname,lastname
+-- Returns counts of 1 when there should be counts of 0
+-- Because the outer join returns the students that have no payments and they get counted as 1
+select  student.studentid,firstname,lastname,count(paymentID) 'Count'  
+from student
+left outer join payment on payment.studentid = student.studentid
+group by student.studentid,firstname,lastname
+-- When using count() with outer joins you must count the PK of the child table. 
+-- If the parent has no child records it will be NULL and therefore not counted
+
+
