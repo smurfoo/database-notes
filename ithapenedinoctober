@@ -1,0 +1,6 @@
+select studentId'ID', 'Student Born: ' + firstname + ' ' + lastname 'Event:Name' from student
+where DATENAME(mm, birthdate) = 'October'
+Union 
+select staffid, 'Staff Hired: ' + firstname + ' ' + lastname from staff
+where DATENAME(mm, datehired) = 'October'
+order by ID desc
