@@ -1,0 +1,39 @@
+insert into itemtype(itemtypeid,itemtypedescription)
+values(1,'Camera')
+insert into itemtype(itemtypeid,itemtypedescription)
+values(2,'Lights')
+insert into itemtype(itemtypeid,itemtypedescription)
+values(3,'Stand')
+insert into itemtype(itemtypeid,itemtypedescription)
+values(2,'Backdrop')
+--Cannot duplicate the same itemtypeid '2'
+insert into itemtype(itemtypeid,itemtypedescription)
+values(89899985225,'Outfit')
+-- Could not insert due to an int being too big
+insert into itemtype(itemtypeid,itemtypedescription)
+values(4A,'Other')
+--Itemtypeid is an int value, cannot use a char '4 (A)'
+insert into item(itemdescription,priceperday,itemtypeid)
+values('Canon G2',25,1)
+insert into item(itemdescription,priceperday,itemtypeid)
+values('100W tungston',18,2)
+insert into item(itemdescription,priceperday,itemtypeid)
+values('Super Flash',25,4)
+-- Itemtypeid should be matching up with existing itemtype from itemtype table i.e canon G2 refers to itemtypeid 1
+insert into item(itemdescription,priceperday,itemtypeid)
+values('Canon EOS20D',30,1)
+insert into item(itemid,itemdescription,priceperday,itemtypeid)
+values(5,'HP630',25,1)
+--Cannot insert into itemid as it is an identity i.e predetermined column
+insert into item(itemdescription,priceperday,itemtypeid)
+values('Light Holdomatic',22,3)
+
+insert into stafftype(stafftypeid,stafftypedescription)
+values(1,'Videographer')
+insert into stafftype(stafftypeid,stafftypedescription)
+values(2,'Photographer')
+insert into stafftype(stafftypeid,stafftypedescription)
+values(1,'Mixer')
+--Stafftypeid 1 already exists
+insert into stafftype(stafftypeid,stafftypedescription)
+values('Sales')
