@@ -18,16 +18,12 @@ go
 select AVG(amount)'Average Payment' from payments
 go
 -- 4. (3 marks) Select the flight codes for all bookings whose total payment amounts are less than $ 10,000.
-select flightcode, amount from flights
-inner join Bookings
-where amount < 10000
-go
+select flightcode from bookings where amount < 10000
 -- 5. (4 marks) Select the flight number, departure date, and the full names of all passengers on all of the scheduled flights for December 15 that are leaving from Edmonton. Include those flights that do not have any passengers.
-Select flights.flightcode, departure from flights
-inner join bookings
-on bookings.flightcode = flights.flightcode
-where DATE(mm,departure) = 'December 15'
-go
+select flightnumber, firstname + ' ' + middlename + ' ' + lastname from Bookings
+inner join flights 
+on flights.flightcode = Bookings.flightcode
+where date = '2022-12-15'
 -- 6. (1 mark) Select all airports that do not have the word "International" in their name.
 select name from airports
 where name not like '%International%'
@@ -35,8 +31,7 @@ go
 -- 7. (3 marks) Select the amount of money that was made each day in the month of August (based on the timestamp in the Payments table). Show the day's number and weekday name along with the total paments on that day. List the days in chronological order.
 
 -- 8. (2 marks) Select the names of the airlines without any scheduled flights. (Use a subquery for your answer.)
-select flightcode from flights
-where FlightCode = (select name from Airlines where FlightCode = null)
+select name from airlines where Name is (select flightcode from flights)
 -- 9. (5 marks) Select the name(s) of airline(s) with the most number of scheduled flights in December. (*Hint: A subquery is required for this problem.*) Prove your solution by creating another seperate query the shows all airline names and the number of scheduled flights in December sorted from highest to lowest number of flights.
 
 --  PROOF
@@ -75,8 +70,8 @@ values ('Fort McMurray Airport','Fort Mcmurray','Canada','YMM','CYMM','56.653301
 go
 -- 3. (2 marks) Change all the flights on December 24 for airline code 'ACA' to indicate that they are now full.
 insert into Flights(IsFull)
-values('True')
-where date = 'December-24-2022'
+values('true')
+where date is 'December-24-2022'
 -- 4. (3 marks) The runways in Abbotsford's airport are getting repaved. Cancel all scheduled flights arriving at or departing from that airport between Christmas and New Years Eve.
 
 -- 5. (2 marks) Remove all the airlines that do not have scheduled flights.
