@@ -10,29 +10,33 @@
 
 select name, city, country, timezone from airports
 where airportcode = 1028
+go
 -- 2. (3 marks) For all bookings, select the flight code, confirmation number and the number of passengers on the booking
-select flightcode, confirmationnumber, count(firstname) 
-from bookings
-group by firstname
+select FlightCode,ConfirmationNumber, COUNT(*) from Bookings
+go
 -- 3. (1 mark) Select the average payment amount.
 select AVG(amount)'Average Payment' from payments
+go
 -- 4. (3 marks) Select the flight codes for all bookings whose total payment amounts are less than $ 10,000.
-select flightcode from bookings
-inner join payments
-on payments.amount = bookings.amount
+select flightcode, amount from flights
+inner join Bookings
 where amount < 10000
+go
 -- 5. (4 marks) Select the flight number, departure date, and the full names of all passengers on all of the scheduled flights for December 15 that are leaving from Edmonton. Include those flights that do not have any passengers.
 Select flights.flightcode, departure from flights
 inner join bookings
 on bookings.flightcode = flights.flightcode
 where DATE(mm,departure) = 'December 15'
+go
 -- 6. (1 mark) Select all airports that do not have the word "International" in their name.
 select name from airports
-where name is not like '%International'
+where name not like '%International%'
+go
 -- 7. (3 marks) Select the amount of money that was made each day in the month of August (based on the timestamp in the Payments table). Show the day's number and weekday name along with the total paments on that day. List the days in chronological order.
 
 -- 8. (2 marks) Select the names of the airlines without any scheduled flights. (Use a subquery for your answer.)
-
+select flightcode from flights
+where FlightCode = (select name from Airlines where FlightCode = null)
 -- 9. (5 marks) Select the name(s) of airline(s) with the most number of scheduled flights in December. (*Hint: A subquery is required for this problem.*) Prove your solution by creating another seperate query the shows all airline names and the number of scheduled flights in December sorted from highest to lowest number of flights.
 
 --  PROOF
@@ -59,14 +63,21 @@ where name is not like '%International'
 --     | Name                          | City    | Country | IATA | ICAO | Latitude      | Longitude      | Altitude | TimeZone | TzDatabaseTimeZone |
 --     |-------------------------------|---------|---------|------|------|---------------|----------------|----------|----------|--------------------|
 --     | Kelowna International Airport | Kelowna | Canada  | YLW  | CYLW | 49.9561004639 | -119.377998352 | 1421     | -8       | America/Vancouver  |
-
+insert into Airports(name,city,country,IATA,ICAO,Latitude,Longitude,Altitude,TimeZone,TzDatabaseTimeZone)
+values ('Kelowna International Airport','Kelowna','Canada','YLW','CYLW','49.9561004639','-119.377998352','1421','-8','America/Vancouver')
+go
 -- 2. (2 marks) Insert the following records into the Airports table, using subqueries where appropriate:
 --     | Name                  | City          | Country | IATA | ICAO | Latitude     | Longitude      | Altitude | TimeZone & TzDatabaseTimeZone                                       |
 --     |-----------------------|---------------|---------|------|------|--------------|----------------|----------|---------------------------------------------------------------------|
 --     | Fort McMurray Airport | Fort Mcmurray | Canada  | YMM  | CYMM | 56.653301239 | -111.222000122 | 1211     | The same time zone as used for the `Edmonton International Airport` |
-
+insert into Airports(name,city,country,IATA,ICAO,Latitude,Longitude,Altitude,TimeZone,TzDatabaseTimeZone)
+values ('Fort McMurray Airport','Fort Mcmurray','Canada','YMM','CYMM','56.653301239','-111.222000122','1211','-7','America/Edmonton')
+go
 -- 3. (2 marks) Change all the flights on December 24 for airline code 'ACA' to indicate that they are now full.
-
+insert into Flights(IsFull)
+values('True')
+where date = 'December-24-2022'
 -- 4. (3 marks) The runways in Abbotsford's airport are getting repaved. Cancel all scheduled flights arriving at or departing from that airport between Christmas and New Years Eve.
 
 -- 5. (2 marks) Remove all the airlines that do not have scheduled flights.
+insert
