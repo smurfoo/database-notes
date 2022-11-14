@@ -1,0 +1,52 @@
+--Parameters
+--Create Procedure Name,(@parameter datatype)
+--as
+--sql code
+--return
+-- more than one parameter
+Create Proc ListStudentsByName(@firstname varchar(25),@lastname varchar(25))
+as select studentid,firstname,lastname, city from Student
+where firstname = @firstname and @lastname = LastName
+return
+go
+--Parameters are not optional
+exec ListStudentsByName
+go
+--you can assign defaults to parameters
+Alter Proc ListStudentsByName(@firstname varchar(25)=null,@lastname varchar(25)=null)
+as select studentid,firstname,lastname, city from Student
+where firstname = @firstname and @lastname = LastName
+return
+exec ListStudentsByName 'Thomas','Brown'
+go
+--If the SP is called and parameters are not passed to it, let the user know that parameters are required
+Alter Proc ListStudentsByName(@firstname varchar(25)=null,@lastname varchar(25)=null)
+as 
+if @firstname is null or @lastname is null
+	Begin
+	RaisError('you must provide a firstname and lastname',16,1)
+	End
+else
+	Begin
+	Select studentid,firstname,lastname, city from Student
+	where firstname = @firstname and LastName = @lastname
+	End
+	return
+exec ListStudentsByName 'Thomas' ,'Brown'
+go
+Create proc GoodCourses(@average decimal(5,2) = null)
+as 
+if @average is null
+	Begin
+	RaisError('you must provide an average',16,1)
+	End
+else
+	Begin
+	Select coursename from course
+	inner join Offering on offering.CourseID= Course.CourseId
+	inner join Registration on offering.OfferingCode = Registration.OfferingCode
+	group by course.CourseId,CourseName
+	having AVG(mark) >@average
+	End
+	return
+exec GoodCourses 80
