@@ -1,0 +1,26 @@
+
+Create Procedure ClubMaintenance(@ClubID varchar(10) = null, @ClubName varchar(50) = null, @IUD char(1) = null)
+AS
+if @clubID is null or @ClubName is null or @IUD is null
+	Begin
+	RaisError('You must provide a ClubID or ClubName or IUD I for insert, D for delete, U for update ',16,1)
+	End
+else
+	Begin
+	if @IUD = 'I'
+	Begin
+	Insert into Club (ClubID, ClubName)
+	values(@ClubID,@ClubName)
+	End
+	else if @IUD = 'D'
+	Begin
+	Delete Club(ClubID, ClubName)
+	values(@ClubID,@ClubName)
+	End
+	else if @IUD = 'U'
+	Begin
+	Inser
+
+
+End
+exec ClubMaintenance '10','Chess','I'
