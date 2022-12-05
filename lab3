@@ -1,0 +1,130 @@
+drop procedure AddPassengers
+drop procedure DeleteAirlines
+drop procedure ArchiveBookings
+drop procedure LookUpFlights
+drop procedure AddAirport
+drop procedure LookUpPassengers
+go
+-- lookuppassengers procedure
+
+create procedure LookUpPassengers (@confirmationNumber char(11) = null)
+AS														--(-1/2 MARK -IS NULL )
+	begin
+	if(select count(*) FROM Passengers WHERE ConfirmationNumber = @confirmationNumber) != 0
+		begin
+			select (FirstName + ' ' + Lastname)'Full Name', DateOfBirth FROM Passengers 
+			where (ConfirmationNumber = @confirmationNumber) 
+			order by customerID 
+		end
+	else
+	begin
+			RAISERROR ('The confirmation number does not exist, try again.', 16, 1)
+		end
+end
+GO
+-- addairport procedure
+
+create procedure AddAirport(@Name varchar(90) = null, @City varchar(35) = null, @Country varchar(35) = null, @IATA char(3) = null, @ICAO char(4) = null,@Latitude decimal(12,9) = null,@Longitude decimal(12,9) = null,	@Altitude int,	@Timezone decimal(2,0) = null,	@TzDatabaseTimeZone	varchar(50) = null)
+AS
+begin
+
+	if @name  is not null and @city  is not null and @country  is not null and @latitude  is not null and @longitude  is not null and @altitude  is not null and @timezone  is not null and @tzDatabaseTimeZone  is not null 
+	begin
+		if(select count(*) from Airports where Name = @Name) = 0
+		begin
+			Insert Into Airports
+				( Name, City, Country, IATA, ICAO, Latitude, Longitude, Altitude, TimeZone, TzDatabaseTimeZone)
+			Values
+				(@Name, @City, @Country, @IATA, @ICAO, @latitude, @longitude, @altitude, @timezone, @tzDatabaseTimeZone)
+		end
+		else
+			RAISERROR ('That Airport already exists, try again.', 16, 1)	--(-1 MARK -NEW CODE?  )
+	end
+end
+GO
+-- Lookupflights procedure
+create procedure LookUpFlights(@FlightCode varchar(18) = null)
+AS
+begin
+	if @FlightCode is not null 
+	begin
+		if(select count(*) from Flights where FlightCode like ('%@FlightCode%')) != 0--(-1/2 MARK - LIKE ERRORS  )
+			begin
+				select FlightCode, FlightNumber, Date, ArrivalAirport'Arrival Airport Name', DepartureAirport'Departure Airport Name'  from Flights 
+				INNER JOIN Airports Airports.ArrivalAirport = Flights.ArrivalAirport
+				where FlightCode like ('%@FlightCode%')		--(-1/2 MARK - LIKE ERROR )	
+			end												--(-1/2 MARK -  JOIN ERROR)
+
+		else
+			begin
+				RAISERROR('There is no flight with that flight code, try again', 16, 1)
+			end
+	end
+end
+GO
+-- addpassengers procedure
+
+create procedure AddPassengers	(@ConfirmationNumber char(11) = null,@FirstName	varchar(40)	= null,	@LastName	varchar(40) = null,	@DateOfBirth date = null)		
+AS
+begin
+	if @ConfirmationNumber is not null and @FirstName is not null and @LastName  is not null and @DateOfBirth is not null 
+	begin
+		if(select count(*) from Bookings where ConfirmationNumber = @ConfirmationNumber) != 0
+		begin
+			declare @count int
+			declare @customerID int = 1
+			set @count = @CustomerID + 1
+			insert into Passengers(ConfirmationNumber, CustomerID, FirstName, LastName, DateOfBirth)
+			values(@ConfirmationNumber, @count, @FirstName, @LastName, @DateOfBirth)--(-1.5 MARK -CUSTOMERID ERRORS?  )
+			update Bookings set PassengerCount = @count where ConfirmationNumber = @ConfirmationNumber
+			print 'Passengers were updated'											--(-1/2 MARK -  PRINT?)
+		end																															--(-1 MARK -@@ERRORS?  )
+		else																															--(-1 MARK - TRANSACTION?  )
+			RAISERROR ('Must enter confimation number', 16, 1)
+	end
+end
+go
+-- archivebookings procedure
+
+create procedure ArchiveBookings(@confirmationNumber char(11) = null)
+AS
+begin
+	if @confirmationNumber is not null
+	begin
+		if(select count(*) FROM Bookings WHERE ConfirmationNumber = @confirmationNumber) != 0
+		begin
+				Delete FROM Bookings WHERE ConfirmationNumber = @confirmationNumber;	--(-2.5 MARK -iNSERT?/TRANSACTION/@@ERROR?  )
+			end
+			else
+				RAISERROR('Cannot be archived the booking has passengers.', 16, 1)
+		end
+
+		else
+		begin
+				RAISERROR('The confirmation number does not exist', 16, 1)
+		end
+end
+GO
+-- deleteairlines procedure
+
+create procedure DeleteAirlines	(@airlineCode char(3) = null)
+AS
+begin
+	IF @airlineCode is not null 
+	begin
+		if(select count(*) FROM Airlines WHERE AirlineCode = @airlineCode) != 0
+		begin
+				print 'Airline successfully deleted';--(-1/2 MARK -  PRINT?)
+				delete from Airlines where AirlineCode = @airlineCode;	--(-1/2 MARK - @@ERROR? )
+		end
+			--(-1 MARK -  HAS FLIGHTS?)
+		else
+				RAISERROR('There are NO AirLines which exist with that AirlineCode.', 16, 1)
+	end
+end
+
+--Discussion
+-- The lab was challenging
+-- It took me a couple of hours to complete the lab 
+-- I felt prepared but I had to lots of reviewing of previous topics
+-- I could not figure how to do the lookupflights procedure kept getting ambiguous name error and was a bit confusing
